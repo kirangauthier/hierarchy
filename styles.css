@@ -1,10 +1,10 @@
 /* css styles */
 
 .quarto-title-block .quarto-title-banner {
-  background-image: url(assets/figure3d_no_background_logo.png);
-  background-size: 300px;
-  background-position: left;
+  background-image: url(assets/rect124075.png);
+  background-size: 190px;
+  background-position: left -35px;
   background-repeat: no-repeat;
-  padding-left: 10px;
+  padding-left: 30px;
   background-origin: content-box;
 }

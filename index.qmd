@@ -12,15 +12,16 @@ page-layout: full
 title-block-banner: true
 ---
 
-## `hierarchy`
+## About `hierarchy`
 
 Welcome to `hierarchy`, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise. More broadly, we're going to use [computational statistics](https://en.wikipedia.org/wiki/Computational_statistics) to:
+
 1. measure unknowns
 2. think generatively
 3. quantify "luck" and "surprise"
 4. visualize and communicate the implications of our model & inference
 
-I, [Kiran](https://www.linkedin.com/in/kiran-gauthier/) , did my PhD in the [Bishop Group](https://bishop.cheme.columbia.edu/) at Columbia University, graduating in August 2022, where I defended my thesis on *optimal experimental design for hierarchical, nonlinear systems* for characterization and design of autonomous microrobots. You can find it [here](https://clio.columbia.edu/catalog/16899459?counter=1). My goal was to use external fields (think magnetic, acoustic) to encode behaviours into microscale colloids to help them autonomously sense their environment, and accomplish tasks in noisy environments. multimodality
+I [(Kiran)](https://www.linkedin.com/in/kiran-gauthier/) did my PhD in the [Bishop Group](https://bishop.cheme.columbia.edu/) at Columbia University, graduating in August 2022, where I defended my thesis on *optimal experimental design for hierarchical, nonlinear systems* for characterization and design of autonomous microrobots. You can find it [here](https://clio.columbia.edu/catalog/16899459?counter=1). My goal was to use external fields (think magnetic, acoustic) to encode behaviours into microscale colloids to help them autonomously sense their environment, and accomplish tasks in noisy environments. multimodality
 
 I started thinking about the *value* of data early on in grad school, because my experiments took a long time to run and a lot of them gave me useless results. As an added complication, my setup varied slightly every day, so I had to constantly recalibrate my understanding of the underlying parameters of my system. That led me to thinking about [experimental design](https://en.wikipedia.org/wiki/Design_of_experiments) to suggest maximally informative experiments conditional on the data that I've already observed. I highly recommend [this](https://arxiv.org/pdf/astro-ph/0409386.pdf) excellent paper from Tom Loredo which got me started about thinking in terms of probabilities and distributions, and how we quantify information using [entropy](https://en.wikipedia.org/wiki/Entropy_(information_theory)). See the section on [experimental design](#experimental-design) for more info.
 
