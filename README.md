@@ -1,2 +1,2 @@
-# hierarchy.github.io
+# hierarchy
 personal computational stats blog 
