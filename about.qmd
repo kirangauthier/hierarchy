@@ -1,19 +1,99 @@
 ---
-title: "About"
-image: profile.jpg
+title: "About me"
+image: assets/prof-pic-crop-2.png
 about:
   template: jolla
   links:
-    - icon: twitter
-      text: Twitter
-      href: https://twitter.com
     - icon: linkedin
       text: LinkedIn
-      href: https://linkedin.com
+      href: https://www.linkedin.com/in/kiran-gauthier/
     - icon: github
       text: Github
-      href: https://github.com
+      href: https://github.com/kirangauthier
+    - icon: email
+      text: Email
+      href: mailto:kiran.gauthier@columbia.edu
 
 ---
 
-About this blog
+## About `hierarchy`
+
+Welcome to `hierarchy`, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise. More broadly, we're going to use [computational statistics](https://en.wikipedia.org/wiki/Computational_statistics) to:
+
+1. measure unknowns
+2. think generatively
+3. quantify "luck" and "surprise"
+4. visualize and communicate the implications of our model & inference
+
+I [(Kiran)](https://www.linkedin.com/in/kiran-gauthier/) did my PhD in the [Bishop Group](https://bishop.cheme.columbia.edu/) at Columbia University, graduating in August 2022, where I defended my thesis on *optimal experimental design for hierarchical, nonlinear systems* to characterize and design autonomous behaviours in microrobots. You can find it [here](https://clio.columbia.edu/catalog/16899459?counter=1). My goal was to use external fields (think magnetic, acoustic) to encode behaviours into microscale colloids to help them autonomously sense their environment, and accomplish tasks in noisy environments, like suppressing dendrite formation in lithium ion batteries, swimming against the flow to deliver cargo, and sniffing your way through stochastic chemical gradients.
+
+These are all part of the larger subset of **distinguishing signal from noise**, and the statistical models I worked on can be applied to autonomous driving, predicting venture captial risk, and selecting optimal dosing regimens for rare diseases, among many other applications. We'll use tools from [probability](https://en.wikipedia.org/wiki/Probability_theory) and [information theory](https://en.wikipedia.org/wiki/Information_theory), and leverage [modern](https://developer.nvidia.com/cuda-zone#:~:text=CUDA%C2%AE%20is%20a%20parallel,harnessing%20the%20power%20of%20GPUs.) [compute](https://en.wikipedia.org/wiki/Just-in-time_compilation) and other [tricks](https://towardsdatascience.com/probability-concepts-explained-marginalisation-2296846344fc) to answer these problems, refining our models and understanding as we go.
+
+## Some initial thoughts
+
+### Experimental design quantifies the value of data
+
+I started thinking about the *value* of data early on in grad school, because my experiments took a long time to run and a lot of them gave me useless results. As an added complication, my setup varied slightly every day, so I had to constantly recalibrate my understanding of the underlying parameters of my system. That led me to thinking about [experimental design](https://en.wikipedia.org/wiki/Design_of_experiments) to suggest maximally informative experiments conditional on the data that I’ve already observed. I highly recommend [this](https://arxiv.org/pdf/astro-ph/0409386.pdf) excellent paper from Tom Loredo which got me started about thinking in terms of probabilities and distributions, and how we quantify information using [entropy](https://kirangauthier.github.io/hierarchy/#:~:text=in%20noisy%20environments.-,multimodality,%2C,-.). See the section on [experimental design](https://kirangauthier.github.io/hierarchy/#experimental-design) for more info.
+
+### Why do I believe in statistical modeling?
+
+[Chris Rackauckas](https://chrisrackauckas.com/) said in a [talk](https://youtu.be/bBH8HVEr0-A?si=_MHPc_CgPE9knED8&t=55) that “the major advances in machine learning were due to encoding more structure into the model” with a subquote of “more structure = faster and better fits from data” and that sums it up pretty well. I think that building models that more closely resemble the “true” data generating process are our best hope of actually learning what’s going on under the hood. And although it’s fun to throw compute at a problem, I believe in [failing fast](https://www.youtube.com/watch?v=ppKpwtGy8KQ) and in the power of the iterative model building [workflow](https://arxiv.org/pdf/2011.01808.pdf) often using coarse-grained models and approximate inference.
+
+This perspective was perfectly summarized by George Box when he said that [“all models are wrong, but some are useful”](https://en.wikipedia.org/wiki/All_models_are_wrong). If our models are only ever an approximation of reality, and our compute, and mental sanity are finite, then it's worth it to see what we can get away with before we build out luxurious models.
+
+Our goal is then to find a model, $M$, that is that is an efficient coarse-grained of reality,
+
+![Models ($p(y \mid \theta, M)$) approximate the true relationship between design and data $q(y \mid d)$.](assets/1_BayesianDesign.png){.center}
+
+
+
+## Any qualms
+,
+
+multimodality
+
+
+folk theorem of statistical computation
+
+intersection of what cna be done and what should be done, is the juice worth the squeeze
+
+distinguish signal from noise
+
+hierarcchal models are everywhere
+
+astronomy (not astrology, I checked), psychology, psychometrics, ecology, econometrics,
+
+Experimental design
+Other great papers to use as introductory material to experimental design are Huan and Marzouk’s [paper](https://arxiv.org/pdf/1108.4146.pdf), Dennis Lindley’s entire catalog, but this [paper](https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-27/issue-4/On-a-Measure-of-the-Information-Provided-by-an-Experiment/10.1214/aoms/1177728069.full) in particular, and Andrew Gelman’s entire catalog, footnotes, and [this](http://www.stat.columbia.edu/~gelman/research/published/27.pdf) paper.
+
+Why his footnotes? I can’t find the quote now (if you remember it, [email](mailto:kiran.gauthier@columbia.edu) me!) but it went something along the lines of “every original thought you’ve ever had about statistics has already been published by Andrew [Gelman] in a footnote of a paper from the 1970s”.
+
+I’m [Kiran](https://scholar.google.com/citations?user=LEl-9SsAAAAJ&hl=en&oi=ao) and I’m a computational statistician, graduating with my PhD from Columbia University other topics to figure out if the juice is worth the squeeze. I’ll be programming in Python, R, Stan, and Julia, and am a huge advocate of failing fast, model parsimony, and [Occam’s razor](https://en.wikipedia.org/wiki/Occam%27s_razor), so we’ll be timing, multiprocessing, broadcasting, and using whichever backend can get us a close-enough answer fastest.
+
+I did my PhD in the Bishop group ………………………… I wrote my dissertation using PyMC3 (now PyMC), and have recently switched to Stan because I’ve been writing in R a lot more. This blog will also give me a chance to revisit PyMC, Pyro and NumPyro (built on top of PyTorch), TFP (built on top of TensorFlow), and Turing.jl to see which is fast and readable.
+
+I also think that visualization is a huge part of my [workflow](https://arxiv.org/abs/2011.01808), which is why I’ve been super impressed with the ease-of-use of the [brms](https://cran.r-project.org/web/packages/brms/index.html) package (not to mention Paul’s support on GitHub and the Stan Discourse), because getting inferential models to act generatively is pretty clunky and requires custom code to develop good visuals. brms takes care of this for you. To my knowledge, there’s no Python equivalent so we’ll flip back and forth depending on how far we are in the prototyping stage.
+
+My favourite book right now is Richard McElreath’s [“Statistical Rethinking”](https://xcelab.net/rm/statistical-rethinking/), and his accompanying lecture [series](https://www.youtube.com/watch?v=FdnMWdICdRs&list=PLDcUM9US4XdPz-KxHM4XHt7uUVGWWVSus) which are both incredibly well written / produced, and are great discussions of challenges with asking the “oracle” of regression seemingly innocuous questions (see the height ~
+ +
+
+ +
+
+ model for a great example).
+
+I believe that there’s huge value in modeling data hierarchially, where groups of individuals are drawn from a population and we’d like to have information flow between them, but these models are often slow, [hard](https://mc-stan.org/docs/2_18/stan-users-guide/reparameterization-section.html) to fit, and are usually much harder to set up than conventional non-hierarchical models. I’m hoping to have a repository that acts as a bridge between the different languages, and packages, so that we can all benefit from the massive amount of documentation and knowledge that has already been shared.
+
+I may make errors, if you see one, please email [kiran.gauthier@columbia.edu](mailto:kiran.gauthier@columbia.edu) me or leave a comment and I’ll revise it!
+
+Library
+I’ll fill this later.
+
+Other blogs I read
+Gelman Betancourt Frank Harrell Aki Vehtari
+
+Posts to come
+BridgeStan Simpson’s paradox Bonferroni correction Talking about interactions
+
+Wish list item: see how information flows between parameters, include something about synthetic data generation.
+
+Add draft: true to the document options if you’d like a post to not be included in the listing, site map, or site search. For example: #— title: “My Post” description: “Post description” author: “Fizz McPhee” date: “5/22/2021” draft: true #—

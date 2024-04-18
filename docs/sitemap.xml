@@ -2,18 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://www./about.html</loc>
-    <lastmod>2024-04-18T14:40:31.300Z</lastmod>
+    <lastmod>2024-04-18T20:59:13.864Z</lastmod>
   </url>
   <url>
-    <loc>https://www./posts/welcome/index.html</loc>
-    <lastmod>2024-04-18T14:40:31.313Z</lastmod>
+    <loc>https://www./posts/why-hierarchy/index.html</loc>
+    <lastmod>2024-04-18T21:53:51.856Z</lastmod>
   </url>
   <url>
     <loc>https://www./posts/post-with-code/index.html</loc>
     <lastmod>2024-04-18T14:40:31.308Z</lastmod>
   </url>
   <url>
+    <loc>https://www./posts/welcome/index.html</loc>
+    <lastmod>2024-04-18T14:40:31.313Z</lastmod>
+  </url>
+  <url>
     <loc>https://www./index.html</loc>
-    <lastmod>2024-04-18T17:57:10.447Z</lastmod>
+    <lastmod>2024-04-18T21:50:39.538Z</lastmod>
   </url>
 </urlset>

@@ -10,5 +10,11 @@
   },
   "about.qmd": {
     "about.html": "c10bf500"
+  },
+  "posts/Why hierarchy? /index.qmd": {
+    "index.html": "6432f157"
+  },
+  "posts/why-hierarchy/index.qmd": {
+    "index.html": "854817af"
   }
 }
