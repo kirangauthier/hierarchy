@@ -167,8 +167,13 @@ window.Quarto = {
 </section>
 <section id="some-initial-thoughts" class="level2">
 <h2 data-anchor-id="some-initial-thoughts">Some initial thoughts</h2>
-<section id="experimental-design-quantifies-the-value-of-data" class="level3">
-<h3 data-anchor-id="experimental-design-quantifies-the-value-of-data">Experimental design quantifies the value of data</h3>
+<section id="portage" class="level3">
+<h3 data-anchor-id="portage">Portage</h3>
+<p>stealing from astronomy astronomy (not astrology, I checked), psychology, psychometrics, ecology, econometrics,</p>
+<p>add the photo in here</p>
+</section>
+<section id="data-quality-is-paramount" class="level3">
+<h3 data-anchor-id="data-quality-is-paramount">Data quality is paramount</h3>
 <p>I started thinking about the <em>value</em> of data early on in grad school, because my experiments took a long time to run and a lot of them gave me useless results. As an added complication, my setup varied slightly every day, so I had to constantly recalibrate my understanding of the underlying parameters of my system. That led me to thinking about <a href="https://en.wikipedia.org/wiki/Design_of_experiments">experimental design</a> to suggest maximally informative experiments conditional on the data that I’ve already observed. I highly recommend <a href="https://arxiv.org/pdf/astro-ph/0409386.pdf">this</a> excellent paper from Tom Loredo which got me started about thinking in terms of probabilities and distributions, and how we quantify information using <a href="https://kirangauthier.github.io/hierarchy/#:~:text=in%20noisy%20environments.-,multimodality,%2C,-.">entropy</a>. See the section on <a href="https://kirangauthier.github.io/hierarchy/#experimental-design">experimental design</a> for more info.</p>
 </section>
 <section id="why-do-i-believe-in-statistical-modeling" class="level3">
@@ -182,6 +187,8 @@ window.Quarto = {
 <figcaption>Models (<span class="math inline">\(p(y \mid \theta, M)\)</span>) approximate the true relationship between design and data <span class="math inline">\(q(y \mid d)\)</span>.</figcaption>
 </figure>
 </div>
+<p>The framework that I developed is especially useful when you have a small amount of data, observed from noisy individuals in heterogeneous groups (hierarchy), and you need to find where to look next (design). Think “how much medicine should I treat a group of patients with rare disease given that they will all process the drug in distinctively different ways”? people are inherently different?</p>
+<p>But I firmly believe that not all data is created equal, and focusing on acquiring high quality data that maximize the predictive power of our models will be the next revolution in science If you put bad data into a AI or ML algorithm it’ll fail without warning with potentially devastating consequences I’m sure you can empathize this with your work</p>
 </section>
 </section>
 <section id="any-qualms" class="level2">
@@ -192,7 +199,6 @@ window.Quarto = {
 <p>intersection of what cna be done and what should be done, is the juice worth the squeeze</p>
 <p>distinguish signal from noise</p>
 <p>hierarcchal models are everywhere</p>
-<p>astronomy (not astrology, I checked), psychology, psychometrics, ecology, econometrics,</p>
 <p>Experimental design Other great papers to use as introductory material to experimental design are Huan and Marzouk’s <a href="https://arxiv.org/pdf/1108.4146.pdf">paper</a>, Dennis Lindley’s entire catalog, but this <a href="https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-27/issue-4/On-a-Measure-of-the-Information-Provided-by-an-Experiment/10.1214/aoms/1177728069.full">paper</a> in particular, and Andrew Gelman’s entire catalog, footnotes, and <a href="http://www.stat.columbia.edu/~gelman/research/published/27.pdf">this</a> paper.</p>
 <p>Why his footnotes? I can’t find the quote now (if you remember it, <a href="mailto:kiran.gauthier@columbia.edu">email</a> me!) but it went something along the lines of “every original thought you’ve ever had about statistics has already been published by Andrew [Gelman] in a footnote of a paper from the 1970s”.</p>
 <p>I’m <a href="https://scholar.google.com/citations?user=LEl-9SsAAAAJ&amp;hl=en&amp;oi=ao">Kiran</a> and I’m a computational statistician, graduating with my PhD from Columbia University other topics to figure out if the juice is worth the squeeze. I’ll be programming in Python, R, Stan, and Julia, and am a huge advocate of failing fast, model parsimony, and <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">Occam’s razor</a>, so we’ll be timing, multiprocessing, broadcasting, and using whichever backend can get us a close-enough answer fastest.</p>
