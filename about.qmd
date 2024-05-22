@@ -31,7 +31,14 @@ These are all part of the larger subset of **distinguishing signal from noise**,
 
 ## Some initial thoughts
 
-### Experimental design quantifies the value of data
+### Portage
+
+stealing from astronomy
+astronomy (not astrology, I checked), psychology, psychometrics, ecology, econometrics,
+
+add the photo in here
+
+### Data quality is paramount
 
 I started thinking about the *value* of data early on in grad school, because my experiments took a long time to run and a lot of them gave me useless results. As an added complication, my setup varied slightly every day, so I had to constantly recalibrate my understanding of the underlying parameters of my system. That led me to thinking about [experimental design](https://en.wikipedia.org/wiki/Design_of_experiments) to suggest maximally informative experiments conditional on the data that I’ve already observed. I highly recommend [this](https://arxiv.org/pdf/astro-ph/0409386.pdf) excellent paper from Tom Loredo which got me started about thinking in terms of probabilities and distributions, and how we quantify information using [entropy](https://kirangauthier.github.io/hierarchy/#:~:text=in%20noisy%20environments.-,multimodality,%2C,-.). See the section on [experimental design](https://kirangauthier.github.io/hierarchy/#experimental-design) for more info.
 
@@ -47,6 +54,12 @@ Our goal is then to find a model, $M$, that is that is an efficient coarse-grain
 
 
 
+The framework that I developed is especially useful when you have a small amount of data, observed from noisy individuals in heterogeneous groups (hierarchy), and you need to find where to look next (design). Think "how much medicine should I treat a group of patients with rare disease given that they will all process the drug in distinctively different ways"? people are inherently different?
+
+But I firmly believe that not all data is created equal, and focusing on acquiring high quality data that maximize the predictive power of our models will be the next revolution in science
+If you put bad data into a AI or ML algorithm it'll fail without warning with potentially devastating consequences
+I’m sure you can empathize this with your work
+
 ## Any qualms
 ,
 
@@ -61,7 +74,7 @@ distinguish signal from noise
 
 hierarcchal models are everywhere
 
-astronomy (not astrology, I checked), psychology, psychometrics, ecology, econometrics,
+
 
 Experimental design
 Other great papers to use as introductory material to experimental design are Huan and Marzouk’s [paper](https://arxiv.org/pdf/1108.4146.pdf), Dennis Lindley’s entire catalog, but this [paper](https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-27/issue-4/On-a-Measure-of-the-Information-Provided-by-an-Experiment/10.1214/aoms/1177728069.full) in particular, and Andrew Gelman’s entire catalog, footnotes, and [this](http://www.stat.columbia.edu/~gelman/research/published/27.pdf) paper.
