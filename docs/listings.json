@@ -2,7 +2,9 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/notin/index.html",
       "/posts/post-with-code/index.html",
+      "/posts/3-card-riddle/index.html",
       "/posts/why-hierarchy/index.html",
       "/posts/welcome/index.html"
     ]

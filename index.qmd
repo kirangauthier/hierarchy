@@ -15,8 +15,8 @@ categories: [intro]
 
 ## About `hierarchy`
 
-Welcome to `hierarchy`, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise.
+Welcome to `hierarchy`, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise in data; usually by thinking about the [data generating process](https://bob-carpenter.github.io/stan-getting-started/stan-getting-started.html).
 
-I graduated with my PhD from Columbia University in 2022, where my [thesis](https://clio.columbia.edu/catalog/16899459?counter=1) was the use of *computational statistics* to optimize experimental design of nonlinear, hierarchical models. I regularly use `Python` (`TensorFlow`, `PyTorch`, `PyMC`), `R` (`brms`, `tidyverse`, `caret`), and `Stan` (`BridgeStan`) to answer the questions I have about my data. I'm passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.
+I graduated with my PhD from Columbia University in 2022, where the focus of my [dissertation](https://clio.columbia.edu/catalog/16899459?counter=1) was the use of *computational statistics* to optimize experimental design of nonlinear, hierarchical models. I regularly use `Python` (`TensorFlow`, `PyTorch`, `PyMC`), `R` (`brms`, `cmdstanr`, `tidyverse`), and `Stan` (`BridgeStan`) to answer the questions I have about the information contained in my data. I'm passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.
 
-Find me [here](https://www.linkedin.com/in/kiran-gauthier/), or send me an [email](mailto:kiran.gauthier@columbia.edu).
+Find me [here](https://www.linkedin.com/in/kiran-gauthier/), or send me an [email](mailto:kiran.gauthier@columbia.edu) :)

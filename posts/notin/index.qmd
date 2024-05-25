@@ -1,0 +1,101 @@
+---
+title: "`%notin%`"
+author: "Kiran Gauthier"
+date: "2024-05-25"
+categories: [R, useful tricks]
+image: "assets/negation-operator.png"
+---
+
+## Negating the `%in%` operator
+
+I find the base [`%in%`](https://stat.ethz.ch/R-manual/R-devel/library/base/html/match.html) operator to be super useful to keep code readable in `R`, but sometimes I want everything **but** what I specify in my `dplyr::filter` call.
+
+Thankfully, there's a really nice way to do it by making use of the `Negate()` function. Here's the code to run it.
+
+```{r}
+suppressPackageStartupMessages({
+  library(tidyverse)
+})
+
+`%notin%` <- Negate(`%in%`)
+```
+
+### `%notin%` with the Palmer archipelago penguins
+
+Let's try it out!
+
+```{r}
+suppressPackageStartupMessages({
+  library(magrittr)
+
+  library(palmerpenguins)
+})
+data(package = 'palmerpenguins')
+
+## get the head of the df
+penguins %>%
+  head()
+
+## get the first three colors from the Tableau10 palette
+tab10_colors <- c("#4E79A7", "#F28E2B", "#E15759")
+```
+
+```{r}
+## print the unique islands
+penguins %$%
+  unique(island)
+```
+
+```{r fig.width=6, fig.height=6/1.618, warning=FALSE}
+## check the %in% operator
+penguins %>%
+
+  filter(island %in% c('Biscoe', 'Torgersen')) %>%
+
+  select(species, island, bill_length_mm, bill_depth_mm, year) %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +
+  geom_point(size=3) +
+  scale_color_manual(values = c("Biscoe" = tab10_colors[1], "Torgersen" = tab10_colors[2])) +
+  labs(
+    title = "bill depth vs bill width",
+    subtitle = "on Biscoe and Torgersen islands",
+    x = "bill depth (mm)",
+    y = "bill width (mm)",
+    color = "island"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+```
+
+```{r fig.width=6, fig.height=6/1.618,, warning=FALSE}
+## check the %notin% operator
+penguins %>%
+
+  filter(island %notin% c('Biscoe', 'Torgersen')) %>%
+
+  select(species, island, bill_length_mm, bill_depth_mm, year) %>%
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +
+  geom_point(size=3) +
+  scale_color_manual(values = c("Dream" = tab10_colors[3])) +
+  labs(
+    title = "bill depth vs bill width",
+    subtitle = "**not** on Biscoe and Torgersen islands",
+    x = "bill depth (mm)",
+    y = "bill width (mm)",
+    color = "island"
+  ) +
+  theme_classic(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+```
+
+### Existing implementations
+
+After searching around, it seems like `Hmisc::%nin%`, and `operators::%!in%` libraries also replicate this functionality, but I still think it's a cool example of reversing the behaviour of base functions using `Negate()`.

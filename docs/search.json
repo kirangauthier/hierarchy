@@ -32,14 +32,14 @@
     "href": "posts/why-hierarchy/index.html",
     "title": "Why hierarchical models?",
     "section": "",
-    "text": "Things that look like other things can share information. This is the fundamental underlying hierarchical modeling, and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
+    "text": "Things that look like other things can share information. This is the fundamental concept that underlies hierarchical modeling. … and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
   },
   {
     "objectID": "posts/why-hierarchy/index.html#why-is-hierarchy-important",
     "href": "posts/why-hierarchy/index.html#why-is-hierarchy-important",
     "title": "Why hierarchical models?",
     "section": "",
-    "text": "Things that look like other things can share information. This is the fundamental underlying hierarchical modeling, and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
+    "text": "Things that look like other things can share information. This is the fundamental concept that underlies hierarchical modeling. … and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
   },
   {
     "objectID": "posts/why-hierarchy/index.html#modeling-home-runs",
@@ -63,11 +63,60 @@
     "text": "Footnotes\n\n\nTechnically, we should have written the likelihood over the players as:↩︎"
   },
   {
+    "objectID": "posts/3-card-riddle/index.html",
+    "href": "posts/3-card-riddle/index.html",
+    "title": "Why hierarchical models?",
+    "section": "",
+    "text": "Things that look like other things can share information. This is the fundamental underlying hierarchical modeling, and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
+  },
+  {
+    "objectID": "posts/3-card-riddle/index.html#why-is-hierarchy-important",
+    "href": "posts/3-card-riddle/index.html#why-is-hierarchy-important",
+    "title": "Why hierarchical models?",
+    "section": "",
+    "text": "Things that look like other things can share information. This is the fundamental underlying hierarchical modeling, and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.\nIntuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I’m probably throwing away information. There is a chance that you’re very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups."
+  },
+  {
+    "objectID": "posts/3-card-riddle/index.html#modeling-home-runs",
+    "href": "posts/3-card-riddle/index.html#modeling-home-runs",
+    "title": "Why hierarchical models?",
+    "section": "Modeling home runs",
+    "text": "Modeling home runs\n\nPlayers as independent entities\nSay we’re trying to model home rates of home runs in the MLB, we could use a binomial distribution to estimate the probability of hitting a home run \\(\\theta\\) for each player in the league \\(1, \\dots, k\\), let’s assume it’s fixed for the given period we observe these players. Your likelihood for the \\(k^\\text{th}\\) player with \\(n\\) at bats and \\(h\\) home runs would look something like1:\n\\[\np(h \\mid n, \\theta) = {n \\choose h} \\theta^h (1 - \\theta)^{n-h}\n\\]\nor, graphically,\n![]\nIntuititvely, this should make sense, the odds of you hitting a home run at any given at bat are \\(\\theta\\). Hitting \\(h\\) home runs given \\(n\\) trials means you had \\(h\\) trials with probability \\(\\theta\\) and \\(n-h\\) trials where you didn’t, which must be realizations of the probability \\(1 - \\theta\\). So far we’re at \\(\\theta^h (1 - \\theta)^{n-h}\\). Taking care of some ordering with the \\({n}\\choose{h}\\), we account for the many ways that we could have had \\(h\\) home runs in \\(n\\) trials, and we end up with a normalized (this just means \\(\\int p(\\mathbf{x}) d\\mathbf{x} = 1\\)) probability density which has a mean value of \\(\\theta n\\) and a variance of \\(n \\theta (1 - \\theta)\\).\nThis should also make sense, given \\(n\\) trials, and an independent probability of success, \\(\\theta\\), we’d expect that the mean number of home runs is \\(\\mathcal{E}[h] = n \\theta\\). What’s interesting, however, is that our variance grows linearly with the number of at bats, as \\(\\text{var}(h) = n \\theta (1 - \\theta) \\propto n\\). So as we have more at bats, the more uncertain we are in the total number of home runs.\nadd the figures here… cite them too\ncomplication is low at bats\nThis is more formally known as partial pooling, summarized well here, and this\nwhat’s the role of priors?\nsimpson’s paradox\nwhy are hierarchical models hard to fit?\npitchers look like other ptichers (not Shohei)\n\\[\np(h_k \\mid n_k, \\theta_k) = {n_k \\choose h_k} \\theta_k^{h_k} (1 - \\theta_k)^{n_k - h_k}\n\\]\nbut I like to drop indexes where I can to simplify notation."
+  },
+  {
+    "objectID": "posts/3-card-riddle/index.html#comments-add-to-blog",
+    "href": "posts/3-card-riddle/index.html#comments-add-to-blog",
+    "title": "Why hierarchical models?",
+    "section": "comments add to blog??",
+    "text": "comments add to blog??"
+  },
+  {
+    "objectID": "posts/3-card-riddle/index.html#footnotes",
+    "href": "posts/3-card-riddle/index.html#footnotes",
+    "title": "Why hierarchical models?",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nTechnically, we should have written the likelihood over the players as:↩︎"
+  },
+  {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
     "title": "Post With Code",
     "section": "",
     "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "posts/notin/index.html",
+    "href": "posts/notin/index.html",
+    "title": "%notin%",
+    "section": "",
+    "text": "I find the base %in% operator to be super useful to keep code readable in R, but sometimes I want everything but what I specify in my dplyr::filter call.\nThankfully, there’s a really nice way to do it by making use of the Negate() function. Here’s the code to run it.\n\nsuppressPackageStartupMessages({\n  library(tidyverse)\n})\n\n`%notin%` &lt;- Negate(`%in%`)\n\n\n\nLet’s try it out!\n\nsuppressPackageStartupMessages({\n  library(magrittr)\n\n  library(palmerpenguins)\n})\ndata(package = 'palmerpenguins')\n\n## get the head of the df\npenguins %&gt;%\n  head()\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n## get the first three colors from the Tableau10 palette\ntab10_colors &lt;- c(\"#4E79A7\", \"#F28E2B\", \"#E15759\")\n\n\n## print the unique islands\npenguins %$%\n  unique(island)\n\n[1] Torgersen Biscoe    Dream    \nLevels: Biscoe Dream Torgersen\n\n\n\n## check the %in% operator\npenguins %&gt;%\n\n  filter(island %in% c('Biscoe', 'Torgersen')) %&gt;%\n\n  select(species, island, bill_length_mm, bill_depth_mm, year) %&gt;%\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +\n  geom_point(size=3) +\n  scale_color_manual(values = c(\"Biscoe\" = tab10_colors[1], \"Torgersen\" = tab10_colors[2])) +\n  labs(\n    title = \"bill depth vs bill width\",\n    subtitle = \"on Biscoe and Torgersen islands\",\n    x = \"bill depth (mm)\",\n    y = \"bill width (mm)\",\n    color = \"island\"\n  ) +\n  theme_classic(base_size = 14) +\n  theme(\n    plot.title = element_text(hjust = 0.5, face = \"bold\"),\n    plot.subtitle = element_text(hjust = 0.5),\n    legend.position = \"top\"\n  )\n\n\n\n\n\n\n\n\n\n## check the %notin% operator\npenguins %&gt;%\n\n  filter(island %notin% c('Biscoe', 'Torgersen')) %&gt;%\n\n  select(species, island, bill_length_mm, bill_depth_mm, year) %&gt;%\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +\n  geom_point(size=3) +\n  scale_color_manual(values = c(\"Dream\" = tab10_colors[3])) +\n  labs(\n    title = \"bill depth vs bill width\",\n    subtitle = \"**not** on Biscoe and Torgersen islands\",\n    x = \"bill depth (mm)\",\n    y = \"bill width (mm)\",\n    color = \"island\"\n  ) +\n  theme_classic(base_size = 14) +\n  theme(\n    plot.title = element_text(hjust = 0.5, face = \"bold\"),\n    plot.subtitle = element_text(hjust = 0.5),\n    legend.position = \"top\"\n  )\n\n\n\n\n\n\n\n\n\n\n\nAfter searching around, it seems like Hmisc::%nin%, and operators::%!in% libraries also replicate this functionality, but I still think it’s a cool example of reversing the behaviour of base functions using Negate()."
+  },
+  {
+    "objectID": "posts/notin/index.html#negating-the-in-operator",
+    "href": "posts/notin/index.html#negating-the-in-operator",
+    "title": "%notin%",
+    "section": "",
+    "text": "I find the base %in% operator to be super useful to keep code readable in R, but sometimes I want everything but what I specify in my dplyr::filter call.\nThankfully, there’s a really nice way to do it by making use of the Negate() function. Here’s the code to run it.\n\nsuppressPackageStartupMessages({\n  library(tidyverse)\n})\n\n`%notin%` &lt;- Negate(`%in%`)\n\n\n\nLet’s try it out!\n\nsuppressPackageStartupMessages({\n  library(magrittr)\n\n  library(palmerpenguins)\n})\ndata(package = 'palmerpenguins')\n\n## get the head of the df\npenguins %&gt;%\n  head()\n\n# A tibble: 6 × 8\n  species island    bill_length_mm bill_depth_mm flipper_length_mm body_mass_g\n  &lt;fct&gt;   &lt;fct&gt;              &lt;dbl&gt;         &lt;dbl&gt;             &lt;int&gt;       &lt;int&gt;\n1 Adelie  Torgersen           39.1          18.7               181        3750\n2 Adelie  Torgersen           39.5          17.4               186        3800\n3 Adelie  Torgersen           40.3          18                 195        3250\n4 Adelie  Torgersen           NA            NA                  NA          NA\n5 Adelie  Torgersen           36.7          19.3               193        3450\n6 Adelie  Torgersen           39.3          20.6               190        3650\n# ℹ 2 more variables: sex &lt;fct&gt;, year &lt;int&gt;\n\n## get the first three colors from the Tableau10 palette\ntab10_colors &lt;- c(\"#4E79A7\", \"#F28E2B\", \"#E15759\")\n\n\n## print the unique islands\npenguins %$%\n  unique(island)\n\n[1] Torgersen Biscoe    Dream    \nLevels: Biscoe Dream Torgersen\n\n\n\n## check the %in% operator\npenguins %&gt;%\n\n  filter(island %in% c('Biscoe', 'Torgersen')) %&gt;%\n\n  select(species, island, bill_length_mm, bill_depth_mm, year) %&gt;%\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +\n  geom_point(size=3) +\n  scale_color_manual(values = c(\"Biscoe\" = tab10_colors[1], \"Torgersen\" = tab10_colors[2])) +\n  labs(\n    title = \"bill depth vs bill width\",\n    subtitle = \"on Biscoe and Torgersen islands\",\n    x = \"bill depth (mm)\",\n    y = \"bill width (mm)\",\n    color = \"island\"\n  ) +\n  theme_classic(base_size = 14) +\n  theme(\n    plot.title = element_text(hjust = 0.5, face = \"bold\"),\n    plot.subtitle = element_text(hjust = 0.5),\n    legend.position = \"top\"\n  )\n\n\n\n\n\n\n\n\n\n## check the %notin% operator\npenguins %&gt;%\n\n  filter(island %notin% c('Biscoe', 'Torgersen')) %&gt;%\n\n  select(species, island, bill_length_mm, bill_depth_mm, year) %&gt;%\n  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = island)) +\n  geom_point(size=3) +\n  scale_color_manual(values = c(\"Dream\" = tab10_colors[3])) +\n  labs(\n    title = \"bill depth vs bill width\",\n    subtitle = \"**not** on Biscoe and Torgersen islands\",\n    x = \"bill depth (mm)\",\n    y = \"bill width (mm)\",\n    color = \"island\"\n  ) +\n  theme_classic(base_size = 14) +\n  theme(\n    plot.title = element_text(hjust = 0.5, face = \"bold\"),\n    plot.subtitle = element_text(hjust = 0.5),\n    legend.position = \"top\"\n  )\n\n\n\n\n\n\n\n\n\n\n\nAfter searching around, it seems like Hmisc::%nin%, and operators::%!in% libraries also replicate this functionality, but I still think it’s a cool example of reversing the behaviour of base functions using Negate()."
   },
   {
     "objectID": "posts/welcome/index.html",
@@ -81,13 +130,13 @@
     "href": "index.html",
     "title": "hierarchy",
     "section": "",
-    "text": "Welcome to hierarchy, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise.\nI graduated with my PhD from Columbia University in 2022, where my thesis was the use of computational statistics to optimize experimental design of nonlinear, hierarchical models. I regularly use Python (TensorFlow, PyTorch, PyMC), R (brms, tidyverse, caret), and Stan (BridgeStan) to answer the questions I have about my data. I’m passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.\nFind me here, or send me an email."
+    "text": "Welcome to hierarchy, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise in data; usually by thinking about the data generating process.\nI graduated with my PhD from Columbia University in 2022, where the focus of my dissertation was the use of computational statistics to optimize experimental design of nonlinear, hierarchical models. I regularly use Python (TensorFlow, PyTorch, PyMC), R (brms, cmdstanr, tidyverse), and Stan (BridgeStan) to answer the questions I have about the information contained in my data. I’m passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.\nFind me here, or send me an email :)"
   },
   {
     "objectID": "index.html#about-hierarchy",
     "href": "index.html#about-hierarchy",
     "title": "hierarchy",
     "section": "",
-    "text": "Welcome to hierarchy, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise.\nI graduated with my PhD from Columbia University in 2022, where my thesis was the use of computational statistics to optimize experimental design of nonlinear, hierarchical models. I regularly use Python (TensorFlow, PyTorch, PyMC), R (brms, tidyverse, caret), and Stan (BridgeStan) to answer the questions I have about my data. I’m passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.\nFind me here, or send me an email."
+    "text": "Welcome to hierarchy, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise in data; usually by thinking about the data generating process.\nI graduated with my PhD from Columbia University in 2022, where the focus of my dissertation was the use of computational statistics to optimize experimental design of nonlinear, hierarchical models. I regularly use Python (TensorFlow, PyTorch, PyMC), R (brms, cmdstanr, tidyverse), and Stan (BridgeStan) to answer the questions I have about the information contained in my data. I’m passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.\nFind me here, or send me an email :)"
   }
 ]
