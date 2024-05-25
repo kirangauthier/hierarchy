@@ -138,5 +138,12 @@
     "title": "hierarchy",
     "section": "",
     "text": "Welcome to hierarchy, a blog about using regression, causal inference, machine learning, and hierarchical (multilevel) modeling to distinguish signal from noise in data; usually by thinking about the data generating process.\nI graduated with my PhD from Columbia University in 2022, where the focus of my dissertation was the use of computational statistics to optimize experimental design of nonlinear, hierarchical models. I regularly use Python (TensorFlow, PyTorch, PyMC), R (brms, cmdstanr, tidyverse), and Stan (BridgeStan) to answer the questions I have about the information contained in my data. I’m passionate about quantifying uncertainty, stochastic optimization, forecasting, game theory, and scientific ML.\nFind me here, or send me an email :)"
+  },
+  {
+    "objectID": "posts/notin/index.html#citations",
+    "href": "posts/notin/index.html#citations",
+    "title": "%notin%",
+    "section": "Citations",
+    "text": "Citations\nThumbnail photo from Donna Patterson hosted on the NSF website."
   }
 ]

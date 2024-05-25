@@ -3,7 +3,7 @@ title: "`%notin%`"
 author: "Kiran Gauthier"
 date: "2024-05-25"
 categories: [R, useful tricks]
-image: "assets/negation-operator.png"
+image: "assets/PalmerStation_chinstrap-penguins_photoby_DonnaPatterson.jpg"
 ---
 
 ## Negating the `%in%` operator
@@ -99,3 +99,7 @@ penguins %>%
 ### Existing implementations
 
 After searching around, it seems like `Hmisc::%nin%`, and `operators::%!in%` libraries also replicate this functionality, but I still think it's a cool example of reversing the behaviour of base functions using `Negate()`.
+
+## Citations
+
+Thumbnail photo from [Donna Patterson](https://www.nsf.gov/news/mmg/media/images/PalmerStation_chinstrap-penguins_photoby_DonnaPatterson.jpg) hosted on the NSF website.
