@@ -6,6 +6,8 @@ categories: [hierarchical modeling, partial pooling, Python, R]
 image: "assets/Simpson's_paradox_continuous.svg"
 ---
 
+http://nakisa.org/bankr-useful-financial-r-snippets/hierarchical-linear-models/
+
 ## Why is hierarchy important?
 
 Things that look like other things can share information. This is the fundamental concept that underlies hierarchical modeling. ... and it has the nice property of helping to stabilize our estimates, especially when there's not a ton of data.
@@ -16,6 +18,20 @@ Intuitively, this makes sense, if I know something about your neighbor, it might
 
 ### Players as independent entities
 
+model sources of variation
+
+differentiate skill from random chance / variation
+
+features of judging models
+
+descriptivess - how well does your midel / metric correlate to an observation of interest in the same time period
+
+predictiveness - how well do they correlate in consequtive seasons / months
+
+reliability - how well does the metric correlate with itself in consequtive seasons
+
+REMOVE MLB, TRY KAGGLE, also, can start with intro to Bayesian stats from Kyle
+
 Say we're trying to model home rates of home runs in the MLB, we could use a [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) distribution to estimate the probability of hitting a home run $\theta$ for each player in the league $1, \dots, k$, let's assume it's fixed for the given period we observe these players. Your likelihood for the $k^\text{th}$ player with $n$ at bats and $h$ home runs would look something like[^1]:
 
 $$
@@ -25,6 +41,12 @@ $$
 or, graphically,
 
 ![]
+
+easy way to do it is using gps which is basically a generalized multivariate normal distribution of infinite dimension
+can use statisitcal tricks with conditioning and margnixalizatio  of multiN to use it in reality
+
+mean and covariance fucntion, cov func describes wigglyness and how jt changes over time
+can use Hilbert space GPs for big datasets  to avoid the data matrix inversion - is an approximate GP
 
 Intuititvely, this should make sense, the odds of you hitting a home run at any given at bat are $\theta$. Hitting $h$ home runs given $n$ trials means you had $h$ trials with probability $\theta$ and $n-h$ trials where you didn't, which must be realizations of the probability $1 - \theta$. So far we're at $\theta^h (1 - \theta)^{n-h}$. Taking care of some ordering with the ${n}\choose{h}$, we account for the many ways that we could have had $h$ home runs in $n$ trials, and we end up with a normalized (this just means $\int p(\mathbf{x}) d\mathbf{x} = 1$) probability density which has a mean value of $\theta n$ and a variance of $n \theta (1 - \theta)$.
 
@@ -37,6 +59,8 @@ complication is low at bats
 
 This is more formally known as [partial pooling](https://mc-stan.org/users/documentation/case-studies/radon_cmdstanpy_plotnine.html), [summarized](https://widdowquinn.github.io/Teaching-Stan-Hierarchical-Modelling/07-partial_pooling_intro.html) well here, and this
 
+
+defaukt PyMC is C backend, can use pyTensor backend to speed things up by allowing different pieces to go to different backends, numpyro runs on JAX which enables GPU
 
 what's the role of priors?
 
