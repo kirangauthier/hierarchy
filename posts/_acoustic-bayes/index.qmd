@@ -1,0 +1,107 @@
+---
+title: "3 card problem"
+author: "Kiran Gauthier"
+date: "2024-04-02"
+categories: [probability, brain teasers]
+image: "assets/Simpson's_paradox_continuous.svg"
+---
+
+Something that I learned
+
+replicate and cite from AJ solomun but redo it for this problem
+
+lines_1 <-
+  lines_1 %>%
+  mutate(remain = c(rep(0:1, times = c(1, 3)),
+                    rep(0,   times = 4 * 3)))
+
+lines_2 <-
+  lines_2 %>%
+  mutate(remain = c(rep(0,   times = 4),
+                    rep(1:0, times = c(1, 3)) %>%
+                      rep(., times = 3),
+                    rep(0,   times = 12 * 4)))
+
+d <-
+  d %>%
+  mutate(remain = c(rep(1:0, times = c(1, 3)),
+                    rep(0:1, times = c(1, 3)),
+                    rep(0,   times = 4 * 4),
+                    rep(1:0, times = c(1, 3)) %>%
+                      rep(., times = 3),
+                    rep(0,   times = 12 * 4)))
+
+# finally, the plot:
+d %>%
+  ggplot(aes(x = position, y = draw)) +
+  geom_segment(data  = lines_1,
+               aes(x = x, xend = xend,
+                   y = y, yend = yend,
+                   alpha = remain %>% as.character()),
+               size  = 1/3) +
+  geom_segment(data  = lines_2,
+               aes(x = x, xend = xend,
+                   y = y, yend = yend,
+                   alpha = remain %>% as.character()),
+               size  = 1/3) +
+  geom_point(aes(fill = fill, alpha = remain %>% as.character()),
+             shape = 21, size = 4) +
+  # it's the alpha parameter that makes elements semitransparent
+  scale_alpha_manual(values = c(1/10, 1)) +
+  scale_fill_manual(values  = c("navy", "white")) +
+  scale_x_continuous(NULL, limits = c(0, 4), breaks = NULL) +
+  scale_y_continuous(NULL, limits = c(0.75, 3), breaks = NULL) +
+  theme(panel.grid      = element_blank(),
+        legend.position = "none") +
+  coord_polar()
+
+## Why is hierarchy important?
+
+Things that look like other things can share information. This is the fundamental underlying hierarchical modeling, and it has the nice property of helping to stabilize our estimates, especially when there's not a ton of data.
+
+Intuitively, this makes sense, if I know something about your neighbor, it might tell me something about you. If I treated you as independent entities, I'm probably throwing away information. There is a chance that you're very dissimilar, but odds are you are more similar to people in your county / state / who share your same job / play the same position as you than you are for people in other groups.
+
+## Modeling home runs
+
+### Players as independent entities
+
+Say we're trying to model home rates of home runs in the MLB, we could use a [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) distribution to estimate the probability of hitting a home run $\theta$ for each player in the league $1, \dots, k$, let's assume it's fixed for the given period we observe these players. Your likelihood for the $k^\text{th}$ player with $n$ at bats and $h$ home runs would look something like[^1]:
+
+$$
+p(h \mid n, \theta) = {n \choose h} \theta^h (1 - \theta)^{n-h}
+$$
+
+or, graphically,
+
+![]
+
+Intuititvely, this should make sense, the odds of you hitting a home run at any given at bat are $\theta$. Hitting $h$ home runs given $n$ trials means you had $h$ trials with probability $\theta$ and $n-h$ trials where you didn't, which must be realizations of the probability $1 - \theta$. So far we're at $\theta^h (1 - \theta)^{n-h}$. Taking care of some ordering with the ${n}\choose{h}$, we account for the many ways that we could have had $h$ home runs in $n$ trials, and we end up with a normalized (this just means $\int p(\mathbf{x}) d\mathbf{x} = 1$) probability density which has a mean value of $\theta n$ and a variance of $n \theta (1 - \theta)$.
+
+This should also make sense, given $n$ trials, and an independent probability of success, $\theta$, we'd expect that the mean number of home runs is $\mathcal{E}[h] = n \theta$. What's interesting, however, is that our variance grows linearly with the number of at bats, as $\text{var}(h) = n \theta (1 - \theta) \propto n$. So as we have more at bats, the more uncertain we are in the total number of home runs.
+
+add the figures here... cite them too
+
+
+complication is low at bats
+
+This is more formally known as [partial pooling](https://mc-stan.org/users/documentation/case-studies/radon_cmdstanpy_plotnine.html), [summarized](https://widdowquinn.github.io/Teaching-Stan-Hierarchical-Modelling/07-partial_pooling_intro.html) well here, and this
+
+
+what's the role of priors?
+
+simpson's paradox
+
+why are hierarchical models hard to fit?
+
+pitchers look like other ptichers (not Shohei)
+
+[^1]: Technically, we should have written the likelihood over the players as:
+
+$$
+p(h_k \mid n_k, \theta_k) = {n_k \choose h_k} \theta_k^{h_k} (1 - \theta_k)^{n_k - h_k}
+$$
+
+but I like to drop indexes where I can to simplify notation.
+
+
+## comments add to blog??

@@ -186,6 +186,7 @@ window.Quarto = {
 
 
 
+<p>http://nakisa.org/bankr-useful-financial-r-snippets/hierarchical-linear-models/</p>
 <section id="why-is-hierarchy-important" class="level2">
 <h2 class="anchored" data-anchor-id="why-is-hierarchy-important">Why is hierarchy important?</h2>
 <p>Things that look like other things can share information. This is the fundamental concept that underlies hierarchical modeling. … and it has the nice property of helping to stabilize our estimates, especially when there’s not a ton of data.</p>
@@ -195,17 +196,27 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="modeling-home-runs">Modeling home runs</h2>
 <section id="players-as-independent-entities" class="level3">
 <h3 class="anchored" data-anchor-id="players-as-independent-entities">Players as independent entities</h3>
+<p>model sources of variation</p>
+<p>differentiate skill from random chance / variation</p>
+<p>features of judging models</p>
+<p>descriptivess - how well does your midel / metric correlate to an observation of interest in the same time period</p>
+<p>predictiveness - how well do they correlate in consequtive seasons / months</p>
+<p>reliability - how well does the metric correlate with itself in consequtive seasons</p>
+<p>REMOVE MLB, TRY KAGGLE, also, can start with intro to Bayesian stats from Kyle</p>
 <p>Say we’re trying to model home rates of home runs in the MLB, we could use a <a href="https://en.wikipedia.org/wiki/Binomial_distribution">binomial</a> distribution to estimate the probability of hitting a home run <span class="math inline">\(\theta\)</span> for each player in the league <span class="math inline">\(1, \dots, k\)</span>, let’s assume it’s fixed for the given period we observe these players. Your likelihood for the <span class="math inline">\(k^\text{th}\)</span> player with <span class="math inline">\(n\)</span> at bats and <span class="math inline">\(h\)</span> home runs would look something like<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>:</p>
 <p><span class="math display">\[
 p(h \mid n, \theta) = {n \choose h} \theta^h (1 - \theta)^{n-h}
 \]</span></p>
 <p>or, graphically,</p>
 <p>![]</p>
+<p>easy way to do it is using gps which is basically a generalized multivariate normal distribution of infinite dimension can use statisitcal tricks with conditioning and margnixalizatio of multiN to use it in reality</p>
+<p>mean and covariance fucntion, cov func describes wigglyness and how jt changes over time can use Hilbert space GPs for big datasets to avoid the data matrix inversion - is an approximate GP</p>
 <p>Intuititvely, this should make sense, the odds of you hitting a home run at any given at bat are <span class="math inline">\(\theta\)</span>. Hitting <span class="math inline">\(h\)</span> home runs given <span class="math inline">\(n\)</span> trials means you had <span class="math inline">\(h\)</span> trials with probability <span class="math inline">\(\theta\)</span> and <span class="math inline">\(n-h\)</span> trials where you didn’t, which must be realizations of the probability <span class="math inline">\(1 - \theta\)</span>. So far we’re at <span class="math inline">\(\theta^h (1 - \theta)^{n-h}\)</span>. Taking care of some ordering with the <span class="math inline">\({n}\choose{h}\)</span>, we account for the many ways that we could have had <span class="math inline">\(h\)</span> home runs in <span class="math inline">\(n\)</span> trials, and we end up with a normalized (this just means <span class="math inline">\(\int p(\mathbf{x}) d\mathbf{x} = 1\)</span>) probability density which has a mean value of <span class="math inline">\(\theta n\)</span> and a variance of <span class="math inline">\(n \theta (1 - \theta)\)</span>.</p>
 <p>This should also make sense, given <span class="math inline">\(n\)</span> trials, and an independent probability of success, <span class="math inline">\(\theta\)</span>, we’d expect that the mean number of home runs is <span class="math inline">\(\mathcal{E}[h] = n \theta\)</span>. What’s interesting, however, is that our variance grows linearly with the number of at bats, as <span class="math inline">\(\text{var}(h) = n \theta (1 - \theta) \propto n\)</span>. So as we have more at bats, the more uncertain we are in the total number of home runs.</p>
 <p>add the figures here… cite them too</p>
 <p>complication is low at bats</p>
 <p>This is more formally known as <a href="https://mc-stan.org/users/documentation/case-studies/radon_cmdstanpy_plotnine.html">partial pooling</a>, <a href="https://widdowquinn.github.io/Teaching-Stan-Hierarchical-Modelling/07-partial_pooling_intro.html">summarized</a> well here, and this</p>
+<p>defaukt PyMC is C backend, can use pyTensor backend to speed things up by allowing different pieces to go to different backends, numpyro runs on JAX which enables GPU</p>
 <p>what’s the role of priors?</p>
 <p>simpson’s paradox</p>
 <p>why are hierarchical models hard to fit?</p>

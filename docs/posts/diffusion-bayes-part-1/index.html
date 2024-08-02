@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.552">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kiran Gauthier">
+<meta name="dcterms.date" content="2024-05-30">
+
+<title>hierarchy - diffusionBayes - part 1: simulated analysis of single trajectories</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">hierarchy</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title"><code>diffusionBayes</code> - part 1: simulated analysis of single trajectories</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Python</div>
+                <div class="quarto-category">Brownian motion</div>
+                <div class="quarto-category">diffusion</div>
+                <div class="quarto-category">simulated data</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Kiran Gauthier </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 30, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="diffusionbayes" class="level1">
+<h1><a href="https://github.com/kirangauthier/diffusionBayes"><code>diffusionBayes</code></a></h1>
+<section id="part-1---simulating-and-analyzing-individual-trajectories" class="level2">
+<h2 class="anchored" data-anchor-id="part-1---simulating-and-analyzing-individual-trajectories">Part 1 - Simulating and analyzing individual trajectories</h2>
+<p>Welcome to the first post in a multi-post series about analyzing diffusive particles trajectories to infer their uncertain diffusivities. All of the code for this project can be found by clicking the link in the titile of this post that’ll take you to the project repository.</p>
+<p>I’m a firm believer that good inference is enabled by becoming familiar with the data generating process as a way to (1) validate your ability to recover, “true”, hidden parameters, and (2) see how our models might fail to capture relevant features within the observed data.</p>
+<p>This first post will consider simulated 2-dimensional random walkers with no directional preference (isotropic), which are perfectly well resolved by our camera, or observer, and are built into our <code>simulate</code> class. We’ll build in complexity as we go, including the opportunity for our particles to:</p>
+<ol type="1">
+<li>drift from convective flows</li>
+<li>get “stuck” on the experimental cell, or media (using potential wells)</li>
+<li>be drawn from different populations, <strong>this one is really cool</strong></li>
+<li>have different sub- and super-diffusive behaviours</li>
+</ol>
+<p>we’ll use a couple of different inference strategies, in our <code>infer</code> class:</p>
+<ol type="1">
+<li>conventional mean squared displacement analysis</li>
+<li>a Bayesian analog of the more conventional analysis</li>
+<li>a population based model, <strong>again, really cool, especially with short, noisy tracks</strong></li>
+</ol>
+<p>discriminating between “good”, and “bad” data using posterior predictive checks, in our <code>check</code> class:</p>
+<ol type="1">
+<li>mean squared displacement</li>
+<li>radius of gyration</li>
+<li>radius of gyration for non-overlapping intervals</li>
+</ol>
+<p>while modulating some of the experimental parameters, in our <code>experiment</code> class:</p>
+<ol type="1">
+<li>artificially reduce the signal-to-noise ratio</li>
+<li>introduce uncertainty in the centroids of our diffusing particles</li>
+<li>break up our tracks (because of approximating quasi-3D environment as 2D, or particles fading into background noise)</li>
+<li>artificially constrain the length of our track <strong>a consequence of above, but this is the most important</strong></li>
+</ol>
+<p>to see how that influences the inference of the diffusivity parameter, <span class="math inline">\(\widehat{D}\)</span>, relative to the true diffusivity, <span class="math inline">\(D_\text{true}\)</span>. When you have long tracks with little uncertainty in the diffusing particle’s position, any inference technique will work. But in the presence of short, noisy tracks, we’ll demonstrate that the posterior predictive checks and population based model significantly outperforms the conventional techniques in reliably estimating the diffusivities.</p>
+<p>Finally, we’ll turn it loose on some real, experimental data and see how it performs!</p>
+</section>
+<section id="load-libraries" class="level2">
+<h2 class="anchored" data-anchor-id="load-libraries">Load libraries</h2>
+<div id="4b9ee59a" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib <span class="im">as</span> mpl</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> session_info</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>config InlineBackend.figure_format<span class="op">=</span><span class="st">'retina'</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>mpl.rc(<span class="st">'font'</span>,family<span class="op">=</span><span class="st">'Arial'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.family'</span>] <span class="op">=</span> <span class="st">'sans-serif'</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.sans-serif'</span>] <span class="op">=</span> [<span class="st">'Arial'</span>]</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'axes.linewidth'</span>] <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>plt.rc(<span class="st">'xtick'</span>, labelsize<span class="op">=</span><span class="dv">7</span>)      <span class="co"># fontsize of the tick labels</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>plt.rc(<span class="st">'ytick'</span>, labelsize<span class="op">=</span><span class="dv">7</span>)      <span class="co"># fontsize of the tick labels</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> (<span class="dv">4</span>, <span class="dv">3</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'font.size'</span>] <span class="op">=</span> <span class="dv">6</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="classes-and-notation" class="level2">
+<h2 class="anchored" data-anchor-id="classes-and-notation">Classes and notation</h2>
+<p>In order to make the code as reproducible as possible, I wanted to initialize some classes so that once everything is built out, you can initialize the class, call the method that you want to <code>simulate</code>, <code>infer</code>, <code>check</code>, or <code>plot</code>, change the parameters of the <code>experiment</code> around, and see how that impacts our results.</p>
+<p>We’re going to start with <code>simulate</code>, and write some of the simplest <code>infer</code> and <code>plot</code> functions for an idealized experiment.</p>
+<div id="3754be33" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Simulate:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    A class for simulating diffusion processes.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Methods:</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">        generate_brownianMotion: Generates a single isotropic 2D particle trajectory.</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="notation" class="level3">
+<h3 class="anchored" data-anchor-id="notation">Notation</h3>
+<p>Let’s set out some notation to take forward, the 2D trajectory of the <span class="math inline">\(j\)</span>-th particle in the <span class="math inline">\(i\)</span>-th experiment will be summarized by <span class="math inline">\(\mathbf{X}_{ij}\)</span>, where the coordinates of the <span class="math inline">\(k\)</span>-th time point are <span class="math inline">\(\[x_{ijk}, y_{ijk}\]\)</span> respectively. The entire trajectory is then given by</p>
+<p><span class="math display">\[
+X_{ij} = \begin{bmatrix}
+x_{ij1} &amp; y_{ij1} \\
+x_{ij2} &amp; y_{ij2} \\
+\vdots &amp; \vdots \\
+x_{ijk} &amp; y_{ijk}
+\end{bmatrix}
+\]</span></p>
+<p>The reason why it’s useful to do it this way is that our diffusive particles are often captured for varying lengths of time, or numbers of frames, so <span class="math inline">\(n_k\)</span>, the total number of frames observed for the <span class="math inline">\(k\)</span>-th particle varies and prevents us from using a nice <code>numpy.array()</code> to contain all of our trajectories.</p>
+<p>Instead, we’ll use a ragged array, or list of lists structure. All of our functions will accept a single 2D trajectory <span class="math inline">\(\mathbf{X}_{ij}\)</span> which contains all of the tracked data for that particle alone. Luckily, a lot of the models that we’re working with are conjugate (more on this below) or easy enough to work with that it doesn’t pose a big issue. We can always decorate our code with an <code>@jit</code> from <strong>numba</strong> or leverage <strong>JAX</strong> if we need to speed things up.</p>
+</section>
+<section id="units-and-seeding" class="level3">
+<h3 class="anchored" data-anchor-id="units-and-seeding">Units and seeding</h3>
+<p>We’ll compute everything under the hood in units of pixels and frames, for example, the units of diffusivity would be <span class="math inline">\(\text{px}^2 / \text{frame}\)</span> under the hood, but will be converted to say <span class="math inline">\(\mu \text{m}^2 / s\)</span> by setting an argument like <code>return_real_units=True</code>.</p>
+<p>In terms of reproducibility, it’s also super important to consider the seeding of each of these functions. You’ll see an argument called <code>base_seed</code> which ensures that whenever we’re sampling random numbers, we can preserve them from run to run.</p>
+</section>
+<section id="initialize-simulate-class" class="level3">
+<h3 class="anchored" data-anchor-id="initialize-simulate-class">Initialize <code>simulate</code> class</h3>
+<p>Let’s initialize our classes, starting with <code>simulate</code>. All of the functions in these posts will be contained in files that are named by the class, so in this case it’ll be <code>simulate.py</code>. You can find the file <a href="https://github.com/kirangauthier/diffusionBayes">here</a>.</p>
+<p>In the simplest case, our particles will perform 2D random walks, and I’m going to get a bit loose with the notation we just set forth to help things not get too cluttered too early. Wherever I say <span class="math inline">\(\mathbf{X}_k\)</span> I really mean <span class="math inline">\(\mathbf{X}_{ijk}\)</span> so the <span class="math inline">\(k\)</span>-th time point of the <span class="math inline">\(j\)</span>-th particle in experiment <span class="math inline">\(i\)</span> is just the <span class="math inline">\(k\)</span>-th time point. This doesn’t butcher our interpretation too badly because our particle’s motion is assumed to be uncorrelated with eachother, and you’ll see why removing the <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> subscripts helps below.</p>
+<p>We can express the likelihood of sequential steps <span class="math inline">\(\mathbf{X}_{k-1} = [x_{k-1}, y_{k-1}]\)</span> and <span class="math inline">\(\mathbf{X}_k\)</span>, during a given time interval <span class="math inline">\(\tau_k = t_k - t_{k-1}\)</span> as:</p>
+<p><span class="math display">\[
+p(\mathbf{X}_k \mid \mathbf{X}_{k-1}, D, \tau_k) = \frac{1}{\sqrt{4 \pi D \tau_k}} \exp{\left(- \frac{r_k^2}{4 D \tau_k} \right)}
+\]</span></p>
+<p>where <span class="math inline">\(r_k^2 = (x_k - x_{k-1})^2 + (y_k - y_{k-1})^2\)</span> is the 2D displacement of the particle during the time interval <span class="math inline">\(\tau_k\)</span>. If you feel comfortable with the above equation, feel free to skip to the next paragraph, otherwise, read the dropdown note and I’ll tell you how I would make sense of the above because I want everyone to stay on board and engaged for as long as they can.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><em>Note:</em> When we express probabilities, such as <span class="math inline">\(p(\mathbf{X}_k \mid \mathbf{X}_{k-1}, D, \tau_k)\)</span>, variables on the right side of the line (in this case <span class="math inline">\(\mathbf{X}_{k-1}, D, \tau_k\)</span>) are assumed to be known. Some people or textbooks might say that we’re <em>conditioning</em> on these variables, all that means is that we’re forming our opinion of our unknowns given the things on the right side of the line. So what do we not know? Whatever’s on the left side of the line, in this case it’s <span class="math inline">\(\mathbf{X}_k\)</span>. Some people might call the variables on the left side of the line random, or latent, variables. All that means is that we don’t know their values with certainty. So I would read this as “conditional on our previous position <span class="math inline">\(\mathbf{X}_{k-1}\)</span>, the diffusivity of our particle <span class="math inline">\(D\)</span>, and time lag <span class="math inline">\(\tau_k\)</span>, the likelihoood of the current position of our particle <span class="math inline">\(\mathbf{X}_k\)</span> is given by the probability density <span class="math inline">\(\frac{1}{\sqrt{4 \pi D \tau_k}} \exp{\left(- \frac{r_k^2}{4 D \tau_k} \right)}\)</span>”.</p>
+</div>
+</div>
+</div>
+<p>Cool, let’s keep going. Now that we’ve considered a single jump between two time points, the rest of the trajectory is pretty simple because in this model, all displacements are assumed to be uncorrelated.</p>
+<p><span class="math display">\[
+p(\mathbf{X}_k \mid D, \tau_k) = p(\mathbf{X}_0) \prod_{k=1}^K \frac{1}{4\pi D \tau_k} \exp \left( -\frac{r_k^2}{4D \tau_k} \right)
+\]</span></p>
+<p>where the only new thing I’ve added is the probability of the initial starting point of the particle, <span class="math inline">\(\mathbf{X}_0\)</span>, which is assumed to be uniform across the viewing area.</p>
+<section id="brownian-motion" class="level4">
+<h4 class="anchored" data-anchor-id="brownian-motion">Brownian motion</h4>
+<p>Cool, so each displacement in 2D is assumed to have variance <span class="math inline">\(4 D \tau_k\)</span>, which is the sum of independent displacements of <span class="math inline">\(2 D \tau_k\)</span> in each direction, let’s implement this below and drop it into our <code>simulate.py</code> file. Expand the below notes on alternatives to this implementation</p>
+<div id="5cd9cc9d" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_brownianMotion(D, n_steps, X_start, tau, base_seed):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Generate a single isotropic 2D particle trajectory.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    Parameters:</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - D (float): Diffusion coefficient [px^2 / frame]</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - n_steps (int): Number of steps in the trajectory [frame]</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    - X_start (tuple): Position at time 0 (x, y) [px, px]</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    - tau (float): Time step [frame]</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">    - base_seed (int): Random seed for this trajectory</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">    - x, y: Arrays containing the x and y positions of the trajectory [px]</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">    Note:</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">    This function uses a independent Gaussian steps to simulate Brownian motion.</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">    The x and y dimensions are assumed to be independent.</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    np.random.seed(base_seed)</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.zeros(n_steps)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> np.zeros(n_steps)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    x[<span class="dv">0</span>], y[<span class="dv">0</span>] <span class="op">=</span> X_start</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> k <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, n_steps):</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      std_dev <span class="op">=</span> np.sqrt(<span class="dv">2</span> <span class="op">*</span> D <span class="op">*</span> tau)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>      x[k] <span class="op">=</span> x[k<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> np.random.normal(<span class="dv">0</span>, std_dev)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      y[k] <span class="op">=</span> y[k<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> np.random.normal(<span class="dv">0</span>, std_dev)</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x, y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p><em>Getting fancy:</em> We could also have written the <code>generate_brownianMotion()</code> function as if it were generated from a multivariate Gaussian of variance <span class="math inline">\(4 D \tau_k\)</span>, the results will be the same:</p>
+<pre><code>def generate_brownianMotion(D, n_steps, X_start, tau, base_seed):
+  # ...
+  np.random.seed(base_seed)
+  x = np.zeros(n_steps)
+  y = np.zeros(n_steps)
+
+  x[0], y[0] = X_start
+
+  # Define the covariance matrix for the multivariate Gaussian
+  covariance_matrix = [[4*D*tau, 0], [0, 4*D*tau]]  # Independent x and y with variance 4Dtau respectively
+
+  for k in range(1, n_steps):
+      step = np.random.multivariate_normal([0, 0], covariance_matrix)
+      x[k] = x[k-1] + step[0]
+      y[k] = y[k-1] + step[1]
+
+  return x, y</code></pre>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For the sake of efficiency however, you’ll see that the final implementation takes advantage of the independence of all jumps and instead computes all of the displacements at once, taking the cumulative sum of their displacements.</p>
+<pre><code>  x[0], y[0] = X_start
+
+  x_traj = np.random.normal(loc=0, scale=2*D*tau, size=t.shape[0]-1)
+  y_traj = np.random.normal(loc=0, scale=2*D*tau, size=t.shape[0]-1)
+
+  x[1:] = x[0] + np.cumsum(x_traj)
+  y[1:] = y[0] + np.cumsum(y_traj)
+
+  return x, y</code></pre>
+</div>
+</div>
+</div>
+<p>Let’s visualize the trajectory!</p>
+<div id="583af60c" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> generate_brownianMotion(D<span class="op">=</span><span class="fl">0.1</span>, n_steps<span class="op">=</span><span class="dv">300</span>, X_start<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>), tau<span class="op">=</span><span class="dv">1</span>, base_seed<span class="op">=</span><span class="dv">4444</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">3</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.plot(x, y, color<span class="op">=</span>firebrick4)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">'equal'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>plt.xticks([<span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>plt.yticks([<span class="dv">0</span>, <span class="op">-</span><span class="dv">5</span>, <span class="op">-</span><span class="dv">10</span>, <span class="op">-</span><span class="dv">15</span>])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x [px]'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'y [px]'</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="cf">pass</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-7-output-1.png" width="355" height="272" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looks great.</p>
+</section>
+</section>
+<section id="initialize-infer-class" class="level3">
+<h3 class="anchored" data-anchor-id="initialize-infer-class">Initialize <code>infer</code> class</h3>
+<p>In this case, we know exactly what the true diffusion coefficient, <span class="math inline">\(D_\text{true}\)</span> is because we set it to 1 <span class="math inline">\(\text{px}^2 / \text{frame}\)</span>. Let’s see if we can recover it, and also add our first couple of functions to our <code>infer</code> and <code>plot</code> classes.</p>
+</section>
+<section id="conventional-msd-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="conventional-msd-analysis">Conventional MSD analysis</h3>
+<p>As we said, we have single particle trajectories in our list of lists, and we want to highlight how short tracks of diffusing particles can be inferred reliably using a hierarchical Bayesian model. At the moment though, we have a really long, perfectly resolved track, so the conventional analysis should be just fine. Remember we have our single particle trajectory, <span class="math inline">\(\mathbf{X}_k = [x_k, y_k]\)</span> where again I’ve dropped the <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> indices to help with clutter. The mean squared displacement (MSD) of a particle during a time lag <span class="math inline">\(\tau\)</span>, <span class="math inline">\(\text{msd}(\tau)\)</span> evolves linearly in the case of Brownian diffusion, <span class="math inline">\(\text{msd}(\tau) = 4 D \tau\)</span> (in <span class="math inline">\(2\text{D}\)</span>). For arbitrary <span class="math inline">\(\tau\)</span>, the MSD is calculated by:</p>
+<p><span class="math display">\[
+\text{msd}(\tau) = \frac{1}{N-\tau} \sum_{k=1}^{N-\tau} [(x_{k + \tau} - x_k)^2 + (y_{k + \tau} - y_k)^2]
+\]</span></p>
+<p>So all it takes is for us to plot the <span class="math inline">\(\text{msd}\)</span> for various values of <span class="math inline">\(\tau\)</span> to a line to estimate the value <span class="math inline">\(\widehat{D}\)</span> (if you’re curious why my <span class="math inline">\(D\)</span> is wearing a hat, click below).</p>
+<p>:::{callout-tip collapse=“true”} Because we usually don’t know the true value of a parameter, you’ll see me write it’s estimate with a hat, as in <span class="math inline">\(\widehat{D}\)</span> to tell you that it’s being fit from the data. This is in constrast to the true value that we had set up earlier in the simualtion, <span class="math inline">\(D_\text{true}\)</span>, which has no hat. :::</p>
+<p>As <span class="math inline">\(\tau\)</span> gets larger and larger, we’ll have less and less data to compute the mean displacement of our particle. To be safe in our averaging, we’ll only use lags from the first 1/3 of the trajectory.</p>
+<div id="e02937f5" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_msd(trajectory):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  x, y <span class="op">=</span> trajectory</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  t <span class="op">=</span> np.arange(<span class="bu">len</span>(x))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  lags <span class="op">=</span> np.unique(t <span class="op">//</span> <span class="dv">3</span>).astype(<span class="bu">int</span>)[::<span class="dv">2</span>]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  msd <span class="op">=</span> np.zeros((lags.shape[<span class="dv">0</span>], ))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> i, lag <span class="kw">in</span> <span class="bu">enumerate</span>(lags):</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    dxlag <span class="op">=</span> np.diff(x[::lag])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    dylag <span class="op">=</span> np.diff(y[::lag])</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    J <span class="op">=</span> dxlag.shape[<span class="dv">0</span>]</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> J <span class="op">==</span> <span class="dv">1</span>:</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">continue</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>      msd[i] <span class="op">=</span> np.<span class="bu">sum</span>( (dxlag <span class="op">-</span> dxlag.mean())<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (dylag <span class="op">-</span> dylag.mean())<span class="op">**</span><span class="dv">2</span> ) <span class="op">/</span> J</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> msd</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># def fit_msd(trajectory):</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="conjugate-inverse-gamma-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="conjugate-inverse-gamma-analysis">Conjugate inverse Gamma analysis</h3>
+<div id="28641c45" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> infer_diffusivity(trajectory, inference_step<span class="op">=</span><span class="dv">1</span>, drift<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  x, y <span class="op">=</span> trajectory</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">## compute displacements</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  idx <span class="op">=</span> (np.mod(t, inference_step)<span class="op">==</span><span class="dv">0</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  dt <span class="op">=</span> t[idx][<span class="dv">1</span>:] <span class="op">-</span> t[idx][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  dx <span class="op">=</span> x[idx][<span class="dv">1</span>:] <span class="op">-</span> x[idx][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  dy <span class="op">=</span> y[idx][<span class="dv">1</span>:] <span class="op">-</span> y[idx][<span class="dv">0</span>:<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  K <span class="op">=</span> dx.shape[<span class="dv">0</span>]</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">## estimate drift parameters</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> drift:</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    Uhat <span class="op">=</span> np.<span class="bu">sum</span>(dx) <span class="op">/</span> np.<span class="bu">sum</span>(dt)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    Vhat <span class="op">=</span> np.<span class="bu">sum</span>(dy) <span class="op">/</span> np.<span class="bu">sum</span>(dt)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> K <span class="op">-</span> <span class="dv">2</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> np.<span class="bu">sum</span>(( (dx <span class="op">-</span> Uhat<span class="op">*</span>dt)<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> (dy <span class="op">-</span> Vhat<span class="op">*</span>dt)<span class="op">**</span><span class="dv">2</span> ) <span class="op">/</span> (<span class="dv">4</span><span class="op">*</span>dt))</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">## compute posterior parameters for inverse gamma distribution</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span>:</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    alpha <span class="op">=</span> K <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> np.<span class="bu">sum</span>( (dx<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> dy<span class="op">**</span><span class="dv">2</span>) <span class="op">/</span> (<span class="dv">4</span><span class="op">*</span>dt) )</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> alpha, beta</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> invGamma_toDiffusivity(alpha, beta, mode<span class="op">=</span><span class="va">True</span>, point_estimate<span class="op">=</span><span class="va">False</span>, interval<span class="op">=</span><span class="fl">0.05</span>):</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="co">## return the mode</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> mode <span class="kw">and</span> point_estimate:</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    mode <span class="op">=</span> beta <span class="op">/</span> (alpha <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mode</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="co">## return the mean</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> mode<span class="op">==</span><span class="va">False</span> <span class="kw">and</span> point_estimate:</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> beta <span class="op">/</span> (alpha <span class="op">-</span> <span class="dv">1</span>) <span class="co">## give an error if alpha not &gt; 1</span></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mean</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> mode <span class="kw">and</span> point_estimate<span class="op">==</span><span class="va">False</span>:</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    mode <span class="op">=</span> beta <span class="op">/</span> (alpha <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    lower <span class="op">=</span> scipy.stats.invgamma.ppf(interval <span class="op">/</span> <span class="dv">2</span>, a<span class="op">=</span>alpha, scale<span class="op">=</span>beta)</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> scipy.stats.invgamma.ppf((<span class="dv">1</span><span class="op">-</span>interval)<span class="op">/</span><span class="dv">2</span>, a<span class="op">=</span>alpha, scale<span class="op">=</span>beta)</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mode, lower, upper</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-fig-polar" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>, <span class="fl">0.01</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> r</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  subplot_kw <span class="op">=</span> {<span class="st">'projection'</span>: <span class="st">'polar'</span>}</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>ax.plot(theta, r)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>ax.set_rticks([<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>])</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ax.grid(<span class="va">True</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="fig-polar" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-polar-output-1.png" width="292" height="287" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-polar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A line plot on a polar axis
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="citations" class="level2">
+<h2 class="anchored" data-anchor-id="citations">Citations</h2>
+<p>Thumbnail photo from <a href="https://www.nsf.gov/news/mmg/media/images/PalmerStation_chinstrap-penguins_photoby_DonnaPatterson.jpg">Donna Patterson</a> hosted on the NSF website.</p>
+</section>
+<section id="session-info" class="level2">
+<h2 class="anchored" data-anchor-id="session-info">Session info</h2>
+<div id="36bd145e" class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>session_info.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<details>
+<summary>Click to view session information</summary>
+<pre>-----
+matplotlib          3.8.4
+numpy               1.26.4
+scipy               1.13.0
+session_info        1.0.0
+simulate            NA
+tqdm                4.66.4
+-----
+</pre>
+<details>
+<summary>Click to view modules imported as dependencies</summary>
+<pre>PIL                         10.3.0
+anyio                       NA
+appnope                     0.1.3
+asttokens                   NA
+attr                        23.1.0
+attrs                       23.1.0
+babel                       2.11.0
+brotli                      1.0.9
+certifi                     2024.02.02
+cffi                        1.16.0
+charset_normalizer          2.0.4
+colorama                    0.4.6
+comm                        0.2.1
+cycler                      0.10.0
+cython_runtime              NA
+dateutil                    2.8.2
+debugpy                     1.6.7
+decorator                   5.1.1
+defusedxml                  0.7.1
+executing                   0.8.3
+fastjsonschema              NA
+idna                        3.7
+ipykernel                   6.28.0
+jedi                        0.18.1
+jinja2                      3.1.3
+json5                       NA
+jsonschema                  4.19.2
+jsonschema_specifications   NA
+jupyter_events              0.8.0
+jupyter_server              2.10.0
+jupyterlab_server           2.25.1
+kiwisolver                  1.4.4
+markupsafe                  2.1.3
+matplotlib_inline           0.1.6
+mpl_toolkits                NA
+nbformat                    5.9.2
+overrides                   NA
+packaging                   23.2
+pandas                      2.2.2
+parso                       0.8.3
+pexpect                     4.8.0
+pkg_resources               NA
+platformdirs                3.10.0
+prometheus_client           NA
+prompt_toolkit              3.0.43
+psutil                      5.9.0
+ptyprocess                  0.7.0
+pure_eval                   0.2.2
+pydev_ipython               NA
+pydevconsole                NA
+pydevd                      2.9.5
+pydevd_file_utils           NA
+pydevd_plugins              NA
+pydevd_tracing              NA
+pygments                    2.15.1
+pyparsing                   3.0.9
+pythonjsonlogger            NA
+pytz                        2024.1
+referencing                 NA
+requests                    2.31.0
+rfc3339_validator           0.1.4
+rfc3986_validator           0.1.1
+rpds                        NA
+send2trash                  NA
+six                         1.16.0
+sniffio                     1.3.0
+socks                       1.7.1
+stack_data                  0.2.0
+tornado                     6.3.3
+traitlets                   5.7.1
+unicodedata2                NA
+urllib3                     2.2.1
+wcwidth                     0.2.5
+websocket                   1.8.0
+yaml                        6.0.1
+zmq                         25.1.2
+</pre>
+</details> <!-- seems like this ends pre, so might as well be explicit -->
+<pre>-----
+IPython             8.20.0
+jupyter_client      8.6.0
+jupyter_core        5.5.0
+jupyterlab          4.0.11
+notebook            7.0.8
+-----
+Python 3.12.2 | packaged by conda-forge | (main, Feb 16 2024, 20:54:21) [Clang 16.0.6 ]
+macOS-13.6.1-arm64-arm-64bit
+-----
+Session information updated at 2024-08-02 15:24
+</pre>
+</details>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/www\.");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

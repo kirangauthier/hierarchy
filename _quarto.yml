@@ -7,7 +7,7 @@ project:
 website:
   title: "hierarchy"
   site-url: https://www.
-  description: "A great sample blog"
+  description: "Statistical modeling and causal inference blog"
   navbar:
     right:
       - about.qmd
@@ -19,6 +19,5 @@ format:
   html:
     theme: cosmo
     css: styles.css
-
 
 

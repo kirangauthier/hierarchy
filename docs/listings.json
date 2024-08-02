@@ -2,8 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/diffusion-bayes-part-1/index.html",
       "/posts/notin/index.html",
-      "/posts/3-card-riddle/index.html",
       "/posts/why-hierarchy/index.html"
     ]
   }

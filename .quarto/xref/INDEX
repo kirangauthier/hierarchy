@@ -25,5 +25,17 @@
   },
   "posts/notin/index.qmd": {
     "index.html": "d0b591d9"
+  },
+  "posts/acoustic-bayes/GPT prompts.md": {
+    "GPT prompts.html": "45d33b31"
+  },
+  "posts/acoustic-bayes/R notes.md": {
+    "R notes.html": "2d3076b7"
+  },
+  "posts/acoustic-bayes/MCMC convergence and diagnostics.md": {
+    "MCMC convergence and diagnostics.html": "d0163f3b"
+  },
+  "posts/diffusion-bayes-part-1/index.qmd": {
+    "index.html": "987995dd"
   }
 }
